@@ -6,6 +6,7 @@ public class User {
 	private String pw;
 	private String name;
 	private String answer;
+	private int auth;
 	
 	public String getId() {
 		return id;
@@ -30,6 +31,12 @@ public class User {
 	}
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+	public int getAuth() {
+		return auth;
+	}
+	public void setAuth(int auth) {
+		this.auth = auth;
 	}
 	
 	

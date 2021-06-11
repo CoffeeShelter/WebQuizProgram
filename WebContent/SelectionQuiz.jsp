@@ -43,15 +43,33 @@ request.setCharacterEncoding("UTF-8");
 			<ul class="nav navbar-nav">
 				<li><a href="main.jsp">메인</a>
 			</ul>
+			<%
+			if (userID == null) {
+			%>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" role="button" aria-haspopup="true"
-					aria-expanded="false">접속하기<span class="caret"></span></a>
+					aria-expanded="false">접속하기<span class="caret"></span>
+				</a>
 					<ul class="dropdown-menu">
-						<li class="active"><a href="login.jsp">로그인</a></li>
+						<li><a href="login.jsp">로그인</a></li>
 						<li><a href="join.jsp">회원가입</a></li>
 					</ul></li>
 			</ul>
+			<%
+			} else {
+			%>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown"><a href="#" class="dropdown-toggle"
+					data-toggle="dropdown" role="button" aria-haspopup="true"
+					aria-expanded="false">회원관리<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="logoutAction.jsp">로그아웃</a></li>
+					</ul></li>
+			</ul>
+			<%
+			}
+			%>
 		</div>
 	</nav>
 	<%
@@ -82,7 +100,7 @@ request.setCharacterEncoding("UTF-8");
 						<th><%=quizGroup.get(groupName)%></th>
 						<th>
 							<button type="submit" class="btn btn-default" name="quiz_group"
-								value="국어 문제">Go</button>
+								value="<%=groupName%>">Go</button>
 						</th>
 					</tr>
 					<%

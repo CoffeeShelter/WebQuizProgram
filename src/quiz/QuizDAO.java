@@ -64,4 +64,24 @@ public class QuizDAO {
 		
 		return quizGroup;
 	}
+	
+	public int AddQuiz(Quiz quiz) {
+		String SQL = "insert into quiz values (?, ?, ?)";
+		
+		// 문제 줄바꿈 <br> 치환
+		String question = quiz.getQuestion().replaceAll("\r\n", "<br>");
+		
+		try {
+			pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, quiz.getQuiz_group());
+			pstmt.setString(2, question);
+			pstmt.setString(3, quiz.getAnswer());
+
+			System.out.println("퀴즈 추가: " + pstmt.toString());
+			return pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
 }

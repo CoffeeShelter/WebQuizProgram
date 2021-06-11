@@ -36,10 +36,9 @@ String answer = request.getParameter("answer");
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" role="button" aria-haspopup="true"
-					aria-expanded="false">접속하기<span class="caret"></span></a>
+					aria-expanded="false">회원관리<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li class="active"><a href="login.jsp">로그인</a></li>
-						<li><a href="join.jsp">회원가입</a></li>
+						<li><a href="logoutAction.jsp">로그아웃</a></li>
 					</ul></li>
 			</ul>
 		</div>
@@ -60,14 +59,12 @@ String answer = request.getParameter("answer");
 
 	<div class="container">
 		<h1><%=quiz.getQuiz_group()%></h1>
-		<h2>
-			문제
-			<%=number%>
-			/
-			<%=quizVector.size()%><br>
-		</h2>
-		<h2><%=quiz.getQuestion()%><br>
-		</h2>
+		<label for="question">			
+		문제 <%=number%> / <%=quizVector.size()%>
+		</label>
+		<div class="jumbotron" id="question">
+			<h2><%=quiz.getQuestion() %><br></h2>
+		</div>
 		<h3 style="color: red"><%=quiz.getAnswer()%></h3>
 		<%
 		if (number < quizVector.size()) {
@@ -81,9 +78,9 @@ String answer = request.getParameter("answer");
 		} else {
 		%>
 		<form method="get" action="QuizResult.jsp">
-		<input type="submit" class="btn btn-success" value="제출">
-		<input type="hidden" name="quiz_group" value="<%=quiz_group %>">
-		<input type="hidden" name="totalCount" value="<%=quizVector.size() %>">
+			<input type="submit" class="btn btn-success" value="제출"> <input
+				type="hidden" name="quiz_group" value="<%=quiz_group%>"> <input
+				type="hidden" name="totalCount" value="<%=quizVector.size()%>">
 		</form>
 		<%
 		}

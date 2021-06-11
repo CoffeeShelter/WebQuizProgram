@@ -1,8 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter"%>
+<%@ page import="java.util.Vector" %>
 <%@ page import="user.UserDAO" %>
 <%@ page import="user.User" %>
+
+<%
+String name = request.getParameter("name");
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,7 +37,7 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="main.jsp">메인</a>
+				<li><a href="main.jsp">메인</a>
 				
 				<%
 				if(userID != null){
@@ -39,7 +45,7 @@
 					User user = userDAO.search(userID);
 					if(user.getAuth()==1){
 					%>
-					<li><a href="UserList.jsp">유저 관리</a>
+					<li class="active"><a href="UserList.jsp">유저 관리</a>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">퀴즈 관리
 							<span class="caret"></span>
@@ -90,19 +96,84 @@
 			%>
 		</div>
 	</nav>
+	<%
+	UserDAO userDAO = new UserDAO();
+	Vector<User> userVector = new Vector<>();
+	%>
 
 	<div class="container">
-		<div class="col-lg-4"></div>
-		<div class="col-lg-4">
-			<div class="jumbostron"
-				style="padding-top: 20px; text-align: center;">
-				<div class="page-header">
-					<h1 style="text-align: center">퀴즈 프로그램</h1>
+	
+		<div class="jumbotron">
+			<form method="get" action="UserList.jsp">
+				<div class="form-group">
+					<div class="form-inline">
+						<label for="search">닉네임</label>
+						<input type="text" class="form-control" name="name" id="search" placeholder="유저 이름을 입력하세요">
+						<button type="submit" class="btn btn-primary">검색</button>
+						
+						<button type="button" class="btn btn-danger pull-right" onclick="location.href='UserList.jsp'">리셋</button>
+					
+						<br>
+					</div>
 				</div>
-				<h3 style="text-align: center;">상단 메뉴의 퀴즈 시작 버튼을 눌러 퀴즈를 풀어보세요</h3>
-			</div>
-		</div>
+			</form>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr class="info">
+								<th scope="col">유저 이름</th>
+								<th scope="col">아이디</th>
+								<th scope="col">비밀번호</th>
+								<th scope="col">비밀번호 찾기 질문 답</th>
+								<th scope="col">권한</th>
+							</tr>
+						</thead>
+						<tbody>
+						<%
+						if(name == null || name == "")
+						{
+							userVector = userDAO.userList();
+							for (User user : userVector)
+							{
+								String auth = (user.getAuth() == 1) ? "관리자" : "회원";
+								String url = "location.href='EditUser.jsp?id="+ user.getId() +"'";
+						%>
+							<tr>
+								<th><button type="button" class="btn btn-link" onclick="<%=url %>"><%=user.getName() %></button></th>
+								<th><%=user.getId() %></th>
+								<th><%=user.getPw() %></th>
+								<th><%=user.getAnswer() %></th>
+								<th><%=auth %></th>
+							</tr>
+						<%
+							}
+						}
+						else
+						{
+							userVector = userDAO.userList(name);
+							for (User user : userVector)
+							{
+								String auth = (user.getAuth() == 1) ? "관리자" : "회원";
+								String url = "location.href='EditUser.jsp?id="+ user.getId() +"'";
+						%>
+							<tr>
+								<th><button type="button" class="btn btn-link" onclick="<%=url %>"><%=user.getName() %></button></th>
+								<th><%=user.getId() %></th>
+								<th><%=user.getPw() %></th>
+								<th><%=user.getAnswer() %></th>
+								<th><%=auth %></th>
+							</tr>
+						<%
+							}
+						}
+						%>
+						</tbody>
+					</table>
+				</div>
+
+		</div>	
 	</div>
+	
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
 </body>

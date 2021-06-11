@@ -23,8 +23,9 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li><a href="main.jsp">메인</a>
-				<li><a href="SelectionQuiz.jsp">퀴즈 시작</a>
 			</ul>
+			
+			
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle"
