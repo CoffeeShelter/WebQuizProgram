@@ -60,6 +60,18 @@
 			%>
 		</div>
 	</nav>
+
+	<div class="container">
+		<div class="col-lg-4"></div>
+		<div class="col-lg-4">
+			<div class="jumbostron" style="padding-top: 20px; text-align: center;">
+				<h1>퀴즈 프로그램</h1>
+				<h3 style="text-align: center;">
+				상단 메뉴의 퀴즈 시작 버튼을 눌러 퀴즈를 풀어보세요
+				</h3>
+			</div>
+		</div>
+	</div>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
 </body>

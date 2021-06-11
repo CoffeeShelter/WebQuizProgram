@@ -1,10 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="quiz.QuizDAO"%>
-<%@ page import="java.util.HashMap"%>
+<%@ page import="quiz.Quiz"%>
+<%@ page import="java.util.Vector"%>
 <!DOCTYPE html>
 <%
 request.setCharacterEncoding("UTF-8");
+String quiz_group = request.getParameter("quiz_group");
+String num = request.getParameter("num");
+String answer = request.getParameter("answer");
 %>
 <html>
 <head>
@@ -14,20 +18,6 @@ request.setCharacterEncoding("UTF-8");
 <title>퀴즈 프로그램</title>
 </head>
 <body>
-	<%
-	session.setAttribute("rightCount", 0);
-	String userID = null;
-	if (session.getAttribute("userID") != null) {
-		userID = (String) session.getAttribute("userID");
-	}
-	if (userID == null) {
-	%>
-	<script>
-		location.href = 'login.jsp'
-	</script>
-	<%
-	}
-	%>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed"
@@ -56,42 +46,67 @@ request.setCharacterEncoding("UTF-8");
 	</nav>
 	<%
 	QuizDAO quizDAO = new QuizDAO();
-	HashMap<String, Integer> quizGroup = quizDAO.SelectQuizList();
-	int num = 0;
+	Vector<Quiz> quizVector = new Vector<>();
+	Quiz quiz = new Quiz();
+	quizVector = quizDAO.SelectQuiz(quiz_group);
+
+	int number = Integer.parseInt(num);
+	String nextNum = Integer.toString((number + 1));
+
+	quiz = quizVector.get(number - 1);
+	System.out.println(quiz.getAnswer());
+	System.out.println(answer);
 	%>
+
 	<div class="container">
-		<h3>퀴즈 선택</h3>
+		<h1><%=quiz.getQuiz_group()%></h1>
+		<h2>
+			문제
+			<%=number%>
+			/
+			<%=quizVector.size()%><br>
+		</h2>
+		<h2><%=quiz.getQuestion()%><br>
+		</h2>
+		<h3 style="color: red"><%=quiz.getAnswer()%></h3>
+		<%
+		if (number < quizVector.size()) {
+		%>
 		<form method="get" action="Quiz.jsp">
-			<input type="hidden" name="num" value="1">
-			<table class="table">
-				<thead>
-					<tr class="info">
-						<th scope="col">#</th>
-						<th scope="col">그룹 명</th>
-						<th scope="col">문제 개수</th>
-						<th scope="col">시작 버튼</th>
-					</tr>
-				</thead>
-				<tbody>
-					<%
-					for (String groupName : quizGroup.keySet()) {
-					%>
-					<tr>
-						<th scope="row"><%=++num%></th>
-						<th><%=groupName%></th>
-						<th><%=quizGroup.get(groupName)%></th>
-						<th>
-							<button type="submit" class="btn btn-default" name="quiz_group"
-								value="국어 문제">Go</button>
-						</th>
-					</tr>
-					<%
-					}
-					%>
-				</tbody>
-			</table>
+			<input type="submit" class="btn btn-primary" value="다음"> <input
+				type=hidden name="num" value=<%=nextNum%>> <input
+				type=hidden name="quiz_group" value="<%=quiz_group%>">
 		</form>
+		<%
+		} else {
+		%>
+		<form method="get" action="QuizResult.jsp">
+		<input type="submit" class="btn btn-success" value="제출">
+		<input type="hidden" name="quiz_group" value="<%=quiz_group %>">
+		<input type="hidden" name="totalCount" value="<%=quizVector.size() %>">
+		</form>
+		<%
+		}
+		%>
+
 	</div>
+
+	<%
+	// 정답일 때
+	if (quiz.getAnswer().equals(answer)) {
+		int count = (int) session.getAttribute("rightCount") + 1;
+		session.setAttribute("rightCount", count);
+		System.out.println(count);
+	%>
+
+	<%
+	// 오답일 때
+	} else {
+	%>
+
+	<%
+	}
+	%>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
 </body>
