@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="user.UserDAO" %>
+<%@ page import="user.User" %>
+<%@ page import="record.RecordDAO" %>
+<%@ page import="record.Record" %>
 <!DOCTYPE html>
 <%
 request.setCharacterEncoding("UTF-8");
@@ -15,6 +19,12 @@ int rightCount = (int) session.getAttribute("rightCount");
 <title>퀴즈 프로그램</title>
 </head>
 <body>
+	<%
+	String userID = null;
+	if (session.getAttribute("userID") != null) {
+		userID = (String) session.getAttribute("userID");
+	}
+	%>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed"
@@ -43,6 +53,34 @@ int rightCount = (int) session.getAttribute("rightCount");
 	<%
 	int total = Integer.parseInt(totalCount);
 	float percent = ((float) rightCount / (float) total) * 100.0f;
+	
+	UserDAO userDAO = new UserDAO();
+	User user = userDAO.search(userID);
+	
+	Record record = new Record();
+	record.setId(userID);
+	record.setGroupName(quiz_group);
+	record.setTotalCount((int)total);
+	record.setCorrectCount((int)rightCount);
+	record.setPercent(Float.toString(percent));
+	
+	RecordDAO recordDAO = new RecordDAO();
+	
+	Record rc = recordDAO.getOneRecord(user.getId(), quiz_group);
+	// 퀴즈 전체 개수가 다르면 퀴즈 수정이 일어난것으로 재 업로드
+	if (rc != null) {
+		if (record.getTotalCount() != rc.getTotalCount()) {
+			recordDAO.updateRecord(record);
+		} else {
+			// 맞은 개수 증가 시 업로드
+			if (record.getCorrectCount() > rc.getCorrectCount()) {
+				recordDAO.updateRecord(record);
+			}
+		}
+	} else {
+		// 첫 업로드
+		recordDAO.setRecord(record);
+	}
 	%>
 	<div class="container">
 		<h1>퀴즈 풀이 결과</h1>
@@ -64,6 +102,9 @@ int rightCount = (int) session.getAttribute("rightCount");
 				</tr>
 			</tbody>
 		</table>
+		<div>
+			<button class="btn btn-success" onclick="location.href='main.jsp'">확인</button>
+		</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
